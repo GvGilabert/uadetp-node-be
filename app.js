@@ -19,6 +19,11 @@ var utilRouter = require('./routes/utils');
 //instancio el servidor
 var app = express();
 
+// app.use(function(req,res,next){
+//   res.setHeader("x-total-count","1");
+//   next();
+// });
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');

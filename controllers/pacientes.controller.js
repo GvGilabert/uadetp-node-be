@@ -1,59 +1,42 @@
-var UserService = require('../services/user.service');
-var UserImgService =require('../services/userImg.service');
+var PacientesService = require('../services/pacientes.service');
 
 // Saving the context of this module inside the _the variable
 _this = this;
 
 // Async Controller function to get the To do List
-exports.getUsers = async function (req, res, next) {
+exports.getPacientes = async function (req, res, next) {
 
     // Check the existence of the query parameters, If doesn't exists assign a default value
     var page = req.query.page ? req.query.page : 1
-    var limit =  parseInt(req.query.limit) ?  parseInt(req.query.limit) : 10;
+    var limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 10;
     try {
-        var Users = await UserService.getUsers({}, page, limit)
+        var Pacientes = await PacientesService.getPacientes({}, page, limit)
         // Return the Users list with the appropriate HTTP password Code and Message.
-        return res.status(200).json({status: 200, data: Users, message: "Succesfully Users Recieved"});
-    } catch (e) {
-        //Return an Error Response Message with Code and the Error Message.
-        return res.status(400).json({status: 400, message: e.message});
-    }
-}
-exports.getUsersByMail = async function (req, res, next) {
-
-    // Check the existence of the query parameters, If doesn't exists assign a default value
-    var page = req.query.page ? req.query.page : 1
-    var limit = req.query.limit ? req.query.limit : 10;
-    let filtro= {email: req.body.email}
-    try {
-        var Users = await UserService.getUsers(filtro, page, limit)
-        // Return the Users list with the appropriate HTTP password Code and Message.
-        return res.status(200).json({status: 200, data: Users, message: "Succesfully Users Recieved"});
+        return res.status(200).json({status: 200, data: Pacientes, message: "Succesfully Pacientes Recieved"});
     } catch (e) {
         //Return an Error Response Message with Code and the Error Message.
         return res.status(400).json({status: 400, message: e.message});
     }
 }
 
-exports.createUser = async function (req, res, next) {
+exports.createPaciente = async function (req, res, next) {
     // Req.Body contains the form submit values.
     console.log("llegue al controller",req.body)
-    var User = {
+    var Paciente = {
         name: req.body.name,
-        email: req.body.email,
-        password: req.body.password
+        age: req.body.age
     }
     try {
         // Calling the Service function with the new object from the Request Body
-        var createdUser = await UserService.createUser(User)
-        return res.status(201).json({createdUser, message: "Succesfully Created User"})
+        var createdPaciente = await PacientesService.createPaciente(Paciente)
+        return res.status(201).json({createdPaciente, message: "Succesfully Created Paciente"})
     } catch (e) {
         //Return an Error Response Message with Code and the Error Message.
         console.log(e)
-        return res.status(400).json({status: 400, message: "User Creation was Unsuccesfull"})
+        return res.status(400).json({status: 400, message: "Paciente Creation was Unsuccesfull"})
     }
 }
-
+/*
 exports.updateUser = async function (req, res, next) {
 
     // Id is necessary for the update
@@ -155,5 +138,5 @@ exports.getImagenUserByMail = async function (req, res, next) {
         return res.status(400).json({status: 400, message: e.message});
     }
 }
-    
+*/    
     
