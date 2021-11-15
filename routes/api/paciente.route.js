@@ -9,7 +9,7 @@ var Authorization = require('../../auth/authorization');
 router.get('/test', function(req, res, next) {
     res.send('Llegaste a la ruta de  api/user.routes');
   });
-router.post('/createpaciente', PacienteController.createPaciente)
+router.post('/createpaciente',Authorization, PacienteController.createPaciente)
 router.get('/',Authorization, PacienteController.getPacientes)
 
 

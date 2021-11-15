@@ -5,7 +5,6 @@ var Routine = require('../models/Routine.model').schema;
 
 
 var WorkoutSchema = new mongoose.Schema({
-    id: String,
     scheduledTime: Number,
     startTime: Number,
     endTime: Number,

@@ -10,12 +10,12 @@ router.get('/test', function(req, res, next) {
     res.send('Llegaste a la ruta de  api/user.routes');
   });
 
-router.get('/', ExerciseController.getExercises)
-router.post('/', ExerciseController.createExercise)
-router.put('/:id',ExerciseController.updateExercise)
-router.delete('/:id', ExerciseController.removeExercise)
-router.get('/history', ExerciseController.getExercises)
-router.get('/history/:id', ExerciseController.getExerciseHistoryById)
+router.get('/', Authorization, ExerciseController.getExercises)
+router.post('/', Authorization, ExerciseController.createExercise)
+router.put('/:id',Authorization, ExerciseController.updateExercise)
+router.delete('/:id', Authorization, ExerciseController.removeExercise)
+router.get('/history', Authorization, ExerciseController.getExercises)
+router.get('/history/:id', Authorization, ExerciseController.getExerciseHistoryById)
 
 // Export the Router
 module.exports = router;

@@ -9,12 +9,21 @@ var Authorization = require('../../auth/authorization');
 router.get('/test', function(req, res, next) {
     res.send('Llegaste a la ruta de  api/Workout.routes');
   });
-router.post('/',Authorization, WorkoutController.createWorkout)
-router.get('/', WorkoutController.getWorkouts)
-router.get('/history', WorkoutController.getWorkouts)
-router.get('/history/count', WorkoutController.getWorkoutsHistoryCount)
-router.delete('/:id', Authorization, WorkoutController.removeWorkout)
-router.put('/:id',Authorization,WorkoutController.updateWorkout)
+
+  router.get('/',Authorization , WorkoutController.getWorkouts)
+  router.post('/',Authorization, WorkoutController.createWorkout)
+  router.put('/:id',Authorization, WorkoutController.updateWorkout)
+  router.delete('/:id',Authorization, WorkoutController.removeWorkout)
+  
+  router.get('/history/count',Authorization, WorkoutController.getWorkoutsHistoryCount)
+  router.get('/history',Authorization, WorkoutController.getWorkoutsHistory)
+  
+  router.get('/history/:id',Authorization, WorkoutController.getWorkoutsHistoryById)
+  router.put('/history/:id',Authorization, WorkoutController.updateWorkout)
+  router.delete('/history/:id',Authorization, WorkoutController.removeWorkout)
+  
+  router.get('/:id',Authorization, WorkoutController.getWorkoutsHistoryById)
+
 
 
 // Export the Router

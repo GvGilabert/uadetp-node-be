@@ -18,6 +18,46 @@ exports.getWorkouts = async function (query, page, limit) {
         console.log("Query",query)
         var Workouts = await Workout.paginate(query, options)
         // Return the Userd list that was retured by the mongoose promise
+
+        return Workouts;
+
+    } catch (e) {
+        // return a Error message describing the reason 
+        console.log("error services",e)
+        throw Error('Error while Paginating Workouts');
+    }
+}
+
+
+exports.getWorkoutsHistory = async function (query, page, limit) {
+
+    // Options setup for the mongoose paginate
+    var options = {
+        page,
+        limit
+    }
+    // Try Catch the awaited promise to handle the error 
+    try {
+        console.log("Query history",query)
+        var Workouts = await Workout.paginate({endTime: {"$ne":null}}, options)
+        // Return the Userd list that was retured by the mongoose promise
+        console.log(Workouts.docs)
+        return Workouts;
+
+    } catch (e) {
+        // return a Error message describing the reason 
+        console.log("error services",e)
+        throw Error('Error while Paginating Workouts');
+    }
+}
+
+exports.getWorkoutsHistoryById = async function (param) {
+
+    // Try Catch the awaited promise to handle the error 
+    try {
+        var Workouts = await Workout.findById(param)
+        // Return the Userd list that was retured by the mongoose promise
+        console.log(Workouts)
         return Workouts;
 
     } catch (e) {
@@ -30,9 +70,11 @@ exports.getWorkouts = async function (query, page, limit) {
 exports.createWorkout = async function (workout) {
     // Creating a new Mongoose Object by using the new keyword  
     var newWorkout = new Workout({
-        name: workout.name,
-        color: workout.color,
-        exercises: workout.exercises
+        scheduledTime: workout.scheduledTime,
+        startTime:workout.startTime,
+        endTime: workout.endTime,
+        routine: workout.routine,
+        notes: workout.notes
     })
 
     try {
@@ -43,7 +85,7 @@ exports.createWorkout = async function (workout) {
         }, process.env.SECRET, {
             expiresIn: 86400 // expires in 24 hours
         });
-        return token;
+        return newWorkout;
     } catch (e) {
         // return a Error message describing the reason 
         console.log(e)    
@@ -51,13 +93,26 @@ exports.createWorkout = async function (workout) {
     }
 }
 
+exports.getWorkoutsCount = async function (){
+    try {
+        console.log("aaaa");
+        var Workouts = await Workout.countDocuments({});
+        // Return the Userd list that was retured by the mongoose promise
+        console.log(Workouts);
+        return Workouts;
+
+    } catch (e) {
+        // return a Error message describing the reason 
+        console.log("error services",e)
+        throw Error('Error while Paginating Workouts');
+    }
+}
+
 exports.updateWorkout = async function (workout) {
     
-    var id = {name :routine.name}
-
     try {
         //Find the old User Object by the Id
-        var oldWorkout = await Workout.findOne(id);
+        var oldWorkout = await Workout.findById(workout._id);
     } catch (e) {
         throw Error("Error occured while Finding the Workout")
     }
@@ -66,19 +121,22 @@ exports.updateWorkout = async function (workout) {
         return false;
     }
     //Edit the User Object
-    oldWorkout.name = workout.name
-    oldWorkout.color = workout.color
-    oldWorkout.exercises = workout.exercises
+    oldWorkout.scheduledTime = workout.scheduledTime,
+    oldWorkout.startTime = workout.startTime,
+    oldWorkout.endTime = workout.endTime,
+    oldWorkout.routine = workout.routine,
+    oldWorkout.notes = workout.notes
+
     try {
         var savedWorkout = await oldWorkout.save()
-        return savedWorkout;
+        return [savedWorkout];
     } catch (e) {
         throw Error("And Error occured while updating the workout");
     }
 }
 
 exports.deleteWorkout = async function (id) {
-
+    console.log(id)
     // Delete the Routine
     try {
         var deleted = await Workout.remove({

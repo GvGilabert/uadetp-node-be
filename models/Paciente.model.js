@@ -6,6 +6,9 @@ var PacienteSchema = new mongoose.Schema({
     id: String,
     name: String,
     age: Number,
+    enfermedadesPre01: String,
+    enfermedadesPre02: String,
+    enfermedadesPre03: String,
     workouts: [Workout]
 })
 

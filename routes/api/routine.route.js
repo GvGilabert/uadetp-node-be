@@ -9,10 +9,10 @@ var Authorization = require('../../auth/authorization');
 router.get('/test', function(req, res, next) {
     res.send('Llegaste a la ruta de  api/Routines.routes');
   });
-router.post('/', RoutineController.createRoutine)
-router.get('/', RoutineController.getRoutines)
-router.delete('/:id', RoutineController.removeRoutine)
-router.put('/:id', RoutineController.updateRoutine)
+router.post('/',Authorization, RoutineController.createRoutine)
+router.get('/',Authorization, RoutineController.getRoutines)
+router.delete('/:id',Authorization, RoutineController.removeRoutine)
+router.put('/:id',Authorization, RoutineController.updateRoutine)
 
 //router.put('/:id',Authorization,RoutineController.updateRoutine)
 
