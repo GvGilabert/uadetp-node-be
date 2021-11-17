@@ -41,7 +41,8 @@ exports.createExercise = async function (exercise) {
         name: exercise.name,
         type: exercise.type,
         url: exercise.url,
-        metrics: exercise.metrics
+        metrics: exercise.metrics,
+        userId: exercise.userId
     })
 
     try {

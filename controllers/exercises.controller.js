@@ -1,4 +1,5 @@
 var ExerciseService = require('../services/exercises.service');
+var user = require('../auth/getUser');
 
 // Saving the context of this module inside the _the variable
 _this = this;
@@ -26,7 +27,7 @@ exports.getExercises = async function (req, res, next) {
     var page = req.query.page ? req.query.page : 1
     var limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 10;
     try {
-        var Exercises = await ExerciseService.getExercise({}, page, limit)
+        var Exercises = await ExerciseService.getExercise({userId: user(req)}, page, limit)
         // Return the Users list with the appropriate HTTP password Code and Message.
         res.header('X-Total-Count', Exercises.docs.length);
         return res.status(200).json(Exercises.docs);
@@ -43,7 +44,8 @@ exports.createExercise = async function (req, res, next) {
         name: req.body.name,
         type: req.body.type,
         url: req.body.url,
-        metrics: req.body.metrics
+        metrics: req.body.metrics,
+        userId: user(req)
     }
     try {
         // Calling the Service function with the new object from the Request Body
@@ -69,7 +71,8 @@ exports.updateExercise = async function (req, res, next) {
         name: req.body.name ? req.body.name : null,       
         type: req.body.type ? req.body.type : null,
         url: req.body.url ? req.body.url : null,
-        metrics: req.body.metrics ? req.body.metrics : null
+        metrics: req.body.metrics ? req.body.metrics : null,
+        userId: user(req)
     }
 
     try {

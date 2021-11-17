@@ -10,7 +10,8 @@ router.get('/test', function(req, res, next) {
     res.send('Llegaste a la ruta de  api/Workout.routes');
   });
 
-  router.get('/',Authorization , WorkoutController.getWorkouts)
+  router.get('/',Authorization, WorkoutController.getWorkouts)
+  
   router.post('/',Authorization, WorkoutController.createWorkout)
   router.put('/:id',Authorization, WorkoutController.updateWorkout)
   router.delete('/:id',Authorization, WorkoutController.removeWorkout)
@@ -22,7 +23,7 @@ router.get('/test', function(req, res, next) {
   router.put('/history/:id',Authorization, WorkoutController.updateWorkout)
   router.delete('/history/:id',Authorization, WorkoutController.removeWorkout)
   
-  router.get('/:id',Authorization, WorkoutController.getWorkoutsHistoryById)
+  router.get('/:id', WorkoutController.getWorkoutsHistoryById)
 
 
 

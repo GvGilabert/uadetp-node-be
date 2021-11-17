@@ -35,7 +35,8 @@ exports.createRoutine = async function (routine) {
     var newRoutine = new Routine({
         name: routine.name,
         color: routine.color,
-        exercises: routine.exercises
+        exercises: routine.exercises,
+        userId: routine.userId
     })
 
     try {

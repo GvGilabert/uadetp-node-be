@@ -1,4 +1,5 @@
 var PacientesService = require('../services/pacientes.service');
+var user = require('../auth/getUser');
 
 // Saving the context of this module inside the _the variable
 _this = this;
@@ -10,9 +11,10 @@ exports.getPacientes = async function (req, res, next) {
     var page = req.query.page ? req.query.page : 1
     var limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 10;
     try {
-        var Pacientes = await PacientesService.getPacientes({}, page, limit)
+        var Pacientes = await PacientesService.getPacientes({userId: user(req)}, page, limit)
         // Return the Users list with the appropriate HTTP password Code and Message.
-        return res.status(200).json({status: 200, data: Pacientes, message: "Succesfully Pacientes Recieved"});
+        console.log(Pacientes.docs);
+        return res.status(200).json(Pacientes.docs);
     } catch (e) {
         //Return an Error Response Message with Code and the Error Message.
         return res.status(400).json({status: 400, message: e.message});
@@ -24,20 +26,25 @@ exports.createPaciente = async function (req, res, next) {
     console.log("llegue al controller",req.body)
     var Paciente = {
         name: req.body.name,
-        age: req.body.age
+        genero: req.body.genero,
+        age: req.body.age,
+        enfermedadesPre01: req.body.enfermedadesPre01,
+        enfermedadesPre02:req.body.enfermedadesPre02,
+        enfermedadesPre03:req.body.enfermedadesPre03,
+        userId: user(req)
     }
     try {
         // Calling the Service function with the new object from the Request Body
         var createdPaciente = await PacientesService.createPaciente(Paciente)
-        return res.status(201).json({createdPaciente, message: "Succesfully Created Paciente"})
+        return res.status(201).json(Paciente)
     } catch (e) {
         //Return an Error Response Message with Code and the Error Message.
         console.log(e)
         return res.status(400).json({status: 400, message: "Paciente Creation was Unsuccesfull"})
     }
 }
-/*
-exports.updateUser = async function (req, res, next) {
+
+exports.updatePaciente = async function (req, res, next) {
 
     // Id is necessary for the update
     if (!req.body.name) {
@@ -45,98 +52,32 @@ exports.updateUser = async function (req, res, next) {
     }
 
     
-    var User = {
-       
+    var Paciente = {
+        _id: req.body._id,
         name: req.body.name ? req.body.name : null,
-        email: req.body.email ? req.body.email : null,
-        password: req.body.password ? req.body.password : null
+        genero: req.body.genero ? req.body.genero : null,
+        age: req.body.age ? req.body.age : null,
+        enfermedadesPre01: req.body.enfermedadesPre01 ? req.body.enfermedadesPre01 : null,
+        enfermedadesPre02: req.body.enfermedadesPre02 ? req.body.enfermedadesPre02 : null,
+        enfermedadesPre03: req.body.enfermedadesPre03 ? req.body.enfermedadesPre03 : null,
+        workouts: req.body.workouts ?  req.body.workouts : null
     }
+
     try {
-        var updatedUser = await UserService.updateUser(User)
-        return res.status(200).json({status: 200, data: updatedUser, message: "Succesfully Updated User"})
+        var updatedPaciente = await PacientesService.updatePaciente(Paciente)
+        return res.status(200).json(Paciente)
     } catch (e) {
-        return res.status(400).json({status: 400., message: e.message})
+        return res.status(400).json(e.message)
     }
 }
 
-exports.removeUser = async function (req, res, next) {
+exports.removePaciente = async function (req, res, next) {
 
     var id = req.params.id;
     try {
-        var deleted = await UserService.deleteUser(id);
-        res.status(200).send("Succesfully Deleted... ");
+        var deleted = await PacientesService.deletePaciente(id);
+        return res.status(204).json();
     } catch (e) {
-        return res.status(400).json({status: 400, message: e.message})
+        return res.status(400).json(e.message)
     }
-}
-
-
-exports.loginUser = async function (req, res, next) {
-    // Req.Body contains the form submit values.
-    console.log("body",req.body)
-    var User = {
-        email: req.body.email,
-        password: req.body.password
-    }
-    try {
-        // Calling the Service function with the new object from the Request Body
-        var loginUser = await UserService.loginUser(User);
-        return res.status(201).json({loginUser, message: "Succesfully login"})
-    } catch (e) {
-        //Return an Error Response Message with Code and the Error Message.
-        return res.status(400).json({status: 400, message: "Invalid username or password"})
-    }
-}
-
-exports.guardarImagenUser = async function (req, res, next) {
-
-    console.log("ImgUser",req.body)
-    // Id is necessary for the update
-    if (!req.body.email) {
-        return res.status(400).json({status: 400., message: "Mail must be present"})
-    }
-
-    let userImg = {
-        email: req.body.email,
-        nombreImagen : req.body.nombreImagen
-    }
-    
-    try {
-        if (userImg.nombreImagen!=='')
-        {
-            var newUserImg = await UserImgService.createUserImg(userImg);
-        }
-        
-        return res.status(201).json({status: 201, message: "Imagen cargada"});
-        
-    } catch (e) {
-        console.log("error guardar imagen",e)
-        return res.status(400).json({status: 400., message: e.message})
-    }
-}
-
-exports.getImagenUserByMail = async function (req, res, next) {
-
-    // Check the existence of the query parameters, If doesn't exists assign a default value
-    var page = req.query.page ? req.query.page : 1
-    var limit = req.query.limit ? req.query.limit : 10;
-    //obtener filtro
-    var filtro = {
-        mail: req.body.email
-    }
-    try {
-        var UsersImg = await UserImgService.getImagenesByUser(filtro, page, limit)
-        // Return the Users list with the appropriate HTTP password Code and Message.
-        console.log("userByDni",UsersImg)
-        if (UsersImg.total===0)
-            return res.status(201).json({status: 201, data: UsersImg, message: "No existe Mail"});
-        else
-            return res.status(200).json({status: 200, data: UsersImg, message: "Succesfully Users Recieved"});
-    } catch (e) {
-        //Return an Error Response Message with Code and the Error Message.
-        console.log(e)
-        return res.status(400).json({status: 400, message: e.message});
-    }
-}
-*/    
-    
+}  

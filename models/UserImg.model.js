@@ -5,7 +5,8 @@ var mongoosePaginate = require('mongoose-paginate')
 var UserImgSchema = new mongoose.Schema({
     date: Date,
     mail: String,
-    nombreImagen: String
+    nombreImagen: String,
+    userId: String
     
 })
 

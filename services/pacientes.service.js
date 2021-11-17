@@ -24,15 +24,21 @@ exports.getPacientes = async function (query, page, limit) {
     } catch (e) {
         // return a Error message describing the reason 
         console.log("error services",e)
-        throw Error('Error while Paginating Users');
+        throw Error('Error while Paginating Pacientes');
     }
 }
+
 
 exports.createPaciente = async function (paciente) {
     // Creating a new Mongoose Object by using the new keyword  
     var newPaciente = new Paciente({
         name: paciente.name,
-        age: paciente.age
+        genero: paciente.genero,
+        age: paciente.age,
+        enfermedadesPre01: paciente.enfermedadesPre01,
+        enfermedadesPre02: paciente.enfermedadesPre02,
+        enfermedadesPre03: paciente.enfermedadesPre03,
+        userId: paciente.userId
     })
 
     try {
@@ -50,71 +56,48 @@ exports.createPaciente = async function (paciente) {
         throw Error("Error while Creating Paciente")
     }
 }
-/*
-exports.updateUser = async function (user) {
-    
-    var id = {name :user.name}
 
+exports.updatePaciente = async function (paciente) {
+    
     try {
         //Find the old User Object by the Id
-        var oldUser = await User.findOne(id);
+        var oldPaciente = await Paciente.findById(paciente._id);
     } catch (e) {
-        throw Error("Error occured while Finding the User")
+        throw Error("Error occured while Finding the Paciente")
     }
     // If no old User Object exists return false
-    if (!oldUser) {
+    if (!oldPaciente) {
         return false;
     }
     //Edit the User Object
-    var hashedPassword = bcrypt.hashSync(user.password, 8);
-    oldUser.name = user.name
-    oldUser.email = user.email
-    oldUser.password = hashedPassword
+    oldPaciente.name = paciente.name,
+    oldPaciente.genero = paciente.genero,
+    oldPaciente.age = paciente.age,
+    oldPaciente.enfermedadesPre01 = paciente.enfermedadesPre01,
+    oldPaciente.enfermedadesPre02 = paciente.enfermedadesPre02,
+    oldPaciente.enfermedadesPre03 = paciente.enfermedadesPre03,
+    oldPaciente.workouts = paciente.workouts 
+
     try {
-        var savedUser = await oldUser.save()
-        return savedUser;
+        var savedPaciente = await oldPaciente.save()
+        return savedPaciente;
     } catch (e) {
-        throw Error("And Error occured while updating the User");
+        throw Error("And Error occured while updating the Paciente");
     }
 }
 
-exports.deleteUser = async function (id) {
+exports.deletePaciente = async function (id) {
 
-    // Delete the User
+    // Delete the Routine
     try {
-        var deleted = await User.remove({
+        var deleted = await Paciente.remove({
             _id: id
         })
         if (deleted.n === 0 && deleted.ok === 1) {
-            throw Error("User Could not be deleted")
+            throw Error("Paciente Could not be deleted")
         }
         return deleted;
     } catch (e) {
-        throw Error("Error Occured while Deleting the User")
+        throw Error("Error Occured while Deleting the Paciente")
     }
 }
-
-
-exports.loginUser = async function (user) {
-
-    // Creating a new Mongoose Object by using the new keyword
-    try {
-        // Find the User 
-        console.log("login:",user)
-        var _details = await User.findOne({
-            email: user.email
-        });
-        var passwordIsValid = bcrypt.compareSync(user.password, _details.password);
-        if (!passwordIsValid) throw Error("Invalid username/password")
-
-        var token = jwt.sign({
-            id: _details._id
-        }, process.env.SECRET, {
-            expiresIn: 86400 // expires in 24 hours
-        });
-        return {token:token, user:_details};
-    } catch (e) {
-        // return a Error message describing the reason     
-        throw Error("Error while Login User")
-    }
-}*/

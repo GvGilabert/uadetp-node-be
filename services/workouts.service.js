@@ -7,7 +7,7 @@ var jwt = require('jsonwebtoken');
 _this = this
 
 exports.getWorkouts = async function (query, page, limit) {
-
+    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA????")
     // Options setup for the mongoose paginate
     var options = {
         page,
@@ -52,7 +52,7 @@ exports.getWorkoutsHistory = async function (query, page, limit) {
 }
 
 exports.getWorkoutsHistoryById = async function (param) {
-
+   
     // Try Catch the awaited promise to handle the error 
     try {
         var Workouts = await Workout.findById(param)
@@ -74,7 +74,9 @@ exports.createWorkout = async function (workout) {
         startTime:workout.startTime,
         endTime: workout.endTime,
         routine: workout.routine,
-        notes: workout.notes
+        notes: workout.notes,
+        userId: workout.userId,
+        paciente: workout.paciente
     })
 
     try {
@@ -95,7 +97,6 @@ exports.createWorkout = async function (workout) {
 
 exports.getWorkoutsCount = async function (){
     try {
-        console.log("aaaa");
         var Workouts = await Workout.countDocuments({});
         // Return the Userd list that was retured by the mongoose promise
         console.log(Workouts);
@@ -126,6 +127,7 @@ exports.updateWorkout = async function (workout) {
     oldWorkout.endTime = workout.endTime,
     oldWorkout.routine = workout.routine,
     oldWorkout.notes = workout.notes
+    oldWorkout.paciente = workout.paciente
 
     try {
         var savedWorkout = await oldWorkout.save()

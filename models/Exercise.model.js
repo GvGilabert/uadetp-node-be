@@ -11,7 +11,8 @@ var ExerciseSchema = new mongoose.Schema({
     startTime: Date,
     url: String,
     metrics: [Metric],
-    notes: String
+    notes: String,
+    userId: String
 })
 
 ExerciseSchema.plugin(mongoosePaginate)

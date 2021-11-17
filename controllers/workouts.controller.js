@@ -1,4 +1,5 @@
 var WorkoutsService = require('../services/workouts.service');
+var user = require('../auth/getUser');
 
 // Saving the context of this module inside the _the variable
 _this = this;
@@ -22,10 +23,6 @@ exports.getWorkoutsHistory = async function (req, res, next) {
 
 exports.getWorkoutsHistoryById = async function (req, res, next) {
 
-    // Check the existence of the query parameters, If doesn't exists assign a default value
-     //var page = req.query.page ? req.query.page : 1
-    //var limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 10;
-    //var limit = 10;
     try {
   
         var Workout = await WorkoutsService.getWorkoutsHistoryById(req.params.id)
@@ -39,13 +36,14 @@ exports.getWorkoutsHistoryById = async function (req, res, next) {
 
 // Async Controller function to get the To do List
 exports.getWorkouts = async function (req, res, next) {
+    console.log("aaaaREQ:      "+req.params)
     // Check the existence of the query parameters, If doesn't exists assign a default value
     var page = req.query.page ? req.query.page : 1
     var limit = parseInt(req.query.limit) ? parseInt(req.query.limit) : 10;
-
+    
     //var limit = 10;
     try {
-        var Workouts = await WorkoutsService.getWorkouts({}, page, limit)
+        var Workouts = await WorkoutsService.getWorkouts({userId: user(req)}, page, limit)
         // Return the Users list with the appropriate HTTP password Code and Message.
         return res.status(200).json(Workouts.docs);
     } catch (e) {
@@ -56,7 +54,7 @@ exports.getWorkouts = async function (req, res, next) {
 
 exports.getWorkoutsHistoryCount = async function (req, res, next) {
         try {
-            var WorkoutsCount = await WorkoutsService.getWorkoutsCount()
+            var WorkoutsCount = await WorkoutsService.getWorkoutsCount({userId: user(req)})
             // Return the Users list with the appropriate HTTP password Code and Message.
             console.log(WorkoutsCount)
             return res.status(200).json(WorkoutsCount);
@@ -68,18 +66,21 @@ exports.getWorkoutsHistoryCount = async function (req, res, next) {
 
 exports.createWorkout = async function (req, res, next) {
     // Req.Body contains the form submit values.
-    console.log("llegue al controller",req.body)
+    console.log(req.body.paciente);
     var Workout = {
         scheduledTime: req.body.scheduledTime,
         startTime: req.body.startTime,
         endTime: req.body.endTime,
         routine: req.body.routine,
-        notes: req.body.notes
+        notes: req.body.notes,
+        paciente: req.body.paciente,
+        userId: user(req)
     }
     try {
         // Calling the Service function with the new object from the Request Body
         var createdWorkouts = await WorkoutsService.createWorkout(Workout)
-        return res.status(201).json(createdWorkouts)
+        //return res.status(201).json(createdWorkouts)
+        return res.status(201).json(Workout)
     } catch (e) {
         //Return an Error Response Message with Code and the Error Message.
         console.log(e)
@@ -95,7 +96,9 @@ exports.updateWorkout = async function (req, res, next) {
         startTime: req.body.startTime,
         endTime: req.body.endTime,
         routine: req.body.routine,
-        notes: req.body.notes
+        notes: req.body.notes,
+        paciente: req.body.paciente,
+        userId: user(req)
     }
     try {
         var updatedWorkout = await WorkoutsService.updateWorkout(Workout)

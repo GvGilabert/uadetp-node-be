@@ -1,4 +1,5 @@
 var RoutinesService = require('../services/routines.service');
+var user = require('../auth/getUser');
 
 // Saving the context of this module inside the _the variable
 _this = this;
@@ -10,7 +11,7 @@ exports.getRoutines = async function (req, res, next) {
     var page = req.query.page ? req.query.page : 1
     var limit =  parseInt(req.query.limit) ?  parseInt(req.query.limit) : 10;
     try {
-        var Routines = await RoutinesService.getRoutines({}, page, limit)
+        var Routines = await RoutinesService.getRoutines({userId: user(req)}, page, limit)
         // Return the Users list with the appropriate HTTP password Code and Message.
         return res.status(200).json(Routines.docs);
     } catch (e) {
@@ -25,7 +26,8 @@ exports.createRoutine = async function (req, res, next) {
     var Routine = {
         name: req.body.name,
         color: req.body.color,
-        exercises: req.body.exercises
+        exercises: req.body.exercises,
+        userId: user(req)
     }
     try {
         // Calling the Service function with the new object from the Request Body
@@ -50,7 +52,8 @@ exports.updateRoutine = async function (req, res, next) {
         _id: req.body._id,
         name: req.body.name ? req.body.name : null,
         color: req.body.color ? req.body.color : null,
-        exercises: req.body.exercises ? req.body.exercises : null
+        exercises: req.body.exercises ? req.body.exercises : null,
+        userId: user(req)
     }
 
     try {

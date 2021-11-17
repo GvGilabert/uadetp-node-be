@@ -7,7 +7,8 @@ var RoutineSchema = new mongoose.Schema({
     id: String,
     name: String,
     color: String,
-    exercises: [Exercise] 
+    exercises: [Exercise],
+    userId: String 
     })
 
 RoutineSchema.plugin(mongoosePaginate)
